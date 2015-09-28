@@ -1,0 +1,64 @@
+<html>
+<head>
+	<title>Sensor Display</title>
+	<script src="https://code.jquery.com/jquery-1.11.3.min.js"></script>
+	<script>
+		function onFilter( _node, _metricguid, _numentries ) {
+			urlstring="" ;
+			if( _node != "all" ) {
+				urlstring += "&node="+_node ;
+			}
+			if( _metricguid != "all" ) {
+				urlstring += "&metricguid="+_metricguid ;
+			}
+			if( ! _numentries ) {
+				_numentries = 50 ;
+			}
+			urlstring += "&numentries="+_numentries ;
+
+			urlstring = urlstring.replace(/^&/, "?");
+			document.location.replace(""+urlstring) ;
+			return false ;
+		};
+	</script>
+</head>
+	<body>
+	<h1>Sensor Logging Data</h1>
+	<p>Filter Node ID:&nbsp;
+		<select id="nodelist">
+		<option value="all" {% if node == "all" %}selected{% endif %}>All Nodes</option>
+	  	{% for entry in nodelist %}
+		<option value="{{ entry[0] }}" {% if node == entry[0] %}selected{% endif %}>{{ entry[1] }}</option>
+	  	{% endfor %}
+		</select>
+
+		<select id="metriclist">
+		<option value="all" {% if node == "all" %}selected{% endif %}>All Types</option>
+	  	{% for entry in nodetypelist %}
+		<option value="{{ entry[0] }}" {% if metricguid == entry[0] %}selected{% endif %}>{{ entry[1] }}</option>
+	  	{% endfor %}
+		</select>
+
+		<input id='numentries' size='4' value='{{maxrows}}'></input>
+		<input type="submit" onclick="onFilter($('#nodelist').val(), $('#metriclist').val(), $('#numentries').val()); return false;"/>
+	</p>
+	<table border=1>
+	  <tr>
+		<td>Node ID</td>
+		<td>Metric Name</td>
+		<td>Metric Value</td>
+		<td>Metric Date</td>
+	  </tr>
+	  {% for entry in entries %}
+	    <tr>
+		<td>{{ entry.nodeid }}</td>
+		<td>{{ entry.metricname }}</td>
+		<td>{{ entry.metric }}</td>
+		<td>{{ entry.metricdt }}</td>
+	    </tr>
+	  {% else %}
+	    <tr><td colspan=2>No rows matched.</td></tr>
+	  {% endfor %}
+	</table>
+	</body>
+</html>
