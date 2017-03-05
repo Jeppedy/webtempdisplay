@@ -39,11 +39,22 @@ def teardown_request(exception):
     if db is not None:
         db.close()
 
+@app.route("/gauge_data/<metricName>/<metricGuid>/")
+def gauge_data( metricName, metricGuid ):
+    WHERE = "WHERE "
+    WHERE += "metricname=\'"+metricName+"\' and metricguid=\'"+metricGuid+"\'"
+    SQLSTMT = "select nodeid, metricname, metric, metricdt from rawdata "+WHERE+" order by metricdt desc limit 1"
+    curs = g.db.execute(SQLSTMT)
+    node = curs.fetchone()
+
+    returnString = '{{"id":"{}","current_value":"{}","at":"{}"}}'.format(metricName, node["metric"], node["metricdt"])
+    return returnString
+
 @app.route("/bootstrap")
 def bootstrap():
     return render_template('bootstrap.html') 
 
-@app.route("/")
+@app.route("/monitor/")
 def withTemplate():
     WHERE=""
     node = request.args.get('node') 
