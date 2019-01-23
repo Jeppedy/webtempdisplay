@@ -7,7 +7,7 @@ from flask import request, session, g, redirect, url_for, \
 app = Flask(__name__)
 
 # configuration
-DATABASE = '/media/USBHDD1/TempMonData/rfmonDB.db'
+DATABASE = '/media/nas-rpi/TempMonData/rfmonDB.db'
 DEBUG = True
 SECRET_KEY = 'development key'
 USERNAME = 'admin'
